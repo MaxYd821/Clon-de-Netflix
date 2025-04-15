@@ -1,6 +1,9 @@
 package com.example.clondenetflix;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +22,17 @@ public class CrearCuentaActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+        Button btnComienza = findViewById(R.id.btnComienza);
+        ImageView ivCerrar = findViewById(R.id.ivCerrar);
+
+        btnComienza.setOnClickListener(v -> {
+            Intent intent = new Intent(CrearCuentaActivity.this, CarteleraActivity.class);
+            startActivity(intent);
+        });
+        ivCerrar.setOnClickListener(v->{
+            Intent intent = new Intent(CrearCuentaActivity.this, InicioSesionActivity.class);
+            startActivity(intent);
         });
     }
 }
