@@ -12,6 +12,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.clondenetflix.Entidades.Usuario;
+import com.example.clondenetflix.Services.UserService;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class InicioSesionActivity extends AppCompatActivity {
 
     @Override
@@ -32,15 +43,43 @@ public class InicioSesionActivity extends AppCompatActivity {
         EditText etPassword = findViewById(R.id.etPassword);
 
         btnIniciarSesion.setOnClickListener(v -> {
+
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
-            if(email.equals("admin") && password.equals("admin")){
-                Intent intent = new Intent(InicioSesionActivity.this, CarteleraActivity.class);
-                startActivity(intent);
-            }
-            else{
-                Toast.makeText(this, "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show();
-            }
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://681161953ac96f7119a469f6.mockapi.io/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            UserService userService = retrofit.create(UserService.class);
+            userService.getUsuarios().enqueue(new Callback<List<Usuario>>() {
+                @Override
+                public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+                    if (response.isSuccessful()) {
+                        List<Usuario> usuarios = response.body();
+                        boolean encontrado = false;
+                        for (Usuario usuario : usuarios) {
+                            if (usuario.getEmail().equals(email) && usuario.getPassword().equals(password)) {
+                                encontrado = true;
+                                break;
+                            }
+                        }
+                        if (encontrado) {
+                            Intent intent = new Intent(InicioSesionActivity.this, CarteleraActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(InicioSesionActivity.this, "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(InicioSesionActivity.this, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Usuario>> call, Throwable throwable) {
+                    Toast.makeText(InicioSesionActivity.this, "Error de conexión: ", Toast.LENGTH_LONG).show();
+                }
+            });
         });
 
         btnSuscribir.setOnClickListener(v -> {

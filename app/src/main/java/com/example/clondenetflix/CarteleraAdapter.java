@@ -1,5 +1,6 @@
 package com.example.clondenetflix;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.clondenetflix.Entidades.Episodio;
 
 import java.util.List;
 
@@ -29,6 +32,20 @@ public class CarteleraAdapter extends RecyclerView.Adapter<CarteleraAdapter.Cart
         Pelicula pelicula = peli.get(position);
         ImageView ivPelicula =holder.itemView.findViewById(R.id.ivPelicula);
         ivPelicula.setImageResource(pelicula.getIdpeli());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(pelicula.getTipo().equals("pelicula")){
+                    Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
+                    v.getContext().startActivity(intent);
+                } else if(pelicula.getTipo().equals("serie")){
+                    Intent intent = new Intent(v.getContext(), DetalleSerieActivity.class);
+                    v.getContext().startActivity(intent);
+                }
+
+            }
+        });
     }
 
     @Override

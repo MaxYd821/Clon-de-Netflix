@@ -30,32 +30,42 @@ public class CarteleraActivity extends AppCompatActivity {
         RecyclerView rvCartelera = findViewById(R.id.rvCartelera);
 
         List<Pelicula> selechoy = Arrays.asList(
-                new Pelicula(R.drawable.adolescencia),
-                new Pelicula(R.drawable.blackmirror),
-                new Pelicula(R.drawable.eljardinero),
-                new Pelicula(R.drawable.devil),
-                new Pelicula(R.drawable.rym),
-                new Pelicula(R.drawable.htsdo)
+                new Pelicula(R.drawable.adolescencia,"serie"),
+                new Pelicula(R.drawable.blackmirror,"serie"),
+                new Pelicula(R.drawable.eljardinero,"serie"),
+                new Pelicula(R.drawable.devil,"serie"),
+                new Pelicula(R.drawable.rym,"serie"),
+                new Pelicula(R.drawable.htsdo,"serie")
         );
 
         List<Pelicula> proxhis = Arrays.asList(
-                new Pelicula(R.drawable.silavida),
-                new Pelicula(R.drawable.twd),
-                new Pelicula(R.drawable.breakingbad),
-                new Pelicula(R.drawable.prision),
-                new Pelicula(R.drawable.drhouse),
-                new Pelicula(R.drawable.lost)
+                new Pelicula(R.drawable.silavida,"serie"),
+                new Pelicula(R.drawable.twd,"serie"),
+                new Pelicula(R.drawable.breakingbad,"serie"),
+                new Pelicula(R.drawable.prision,"serie"),
+                new Pelicula(R.drawable.drhouse,"serie"),
+                new Pelicula(R.drawable.lost,"serie")
+        );
+
+        List<Pelicula> porqviste = Arrays.asList(
+                new Pelicula(R.drawable.vanhel,"pelicula"),
+                new Pelicula(R.drawable.inframundo,"pelicula"),
+                new Pelicula(R.drawable.hellboy, "pelicula"),
+                new Pelicula(R.drawable.tomraider, "pelicula"),
+                new Pelicula(R.drawable.anaconda2, "pelicula"),
+                new Pelicula(R.drawable.life, "pelicula")
         );
 
         List<Pelicula> milista = Arrays.asList(
-                new Pelicula(R.drawable.twd),
-                new Pelicula(R.drawable.breakingbad),
-                new Pelicula(R.drawable.adolescencia)
+                new Pelicula(R.drawable.twd, "serie"),
+                new Pelicula(R.drawable.breakingbad, "serie"),
+                new Pelicula(R.drawable.adolescencia, "serie")
         );
 
         List<CategoriaPeliculas> categorias = Arrays.asList(
                 new CategoriaPeliculas("Nuestra selección de hoy para ti", selechoy),
                 new CategoriaPeliculas("Tu próxima historia", proxhis),
+                new CategoriaPeliculas("Porque viste Resident Evil", porqviste),
                 new CategoriaPeliculas("Mi lista                                            Ver Todos>", milista)
         );
 
