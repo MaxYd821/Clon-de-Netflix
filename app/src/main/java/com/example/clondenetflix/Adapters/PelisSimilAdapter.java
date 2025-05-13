@@ -21,6 +21,7 @@ public class PelisSimilAdapter extends RecyclerView.Adapter<PelisSimilAdapter.Pe
 
     private List<Pelicula> peli;
 
+
     public PelisSimilAdapter(List<Pelicula> peli){
         this.peli = peli;
     }

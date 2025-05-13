@@ -3,12 +3,20 @@ package com.example.clondenetflix;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.clondenetflix.Entidades.Episodio;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +36,8 @@ public class CarteleraActivity extends AppCompatActivity {
         });
 
         RecyclerView rvCartelera = findViewById(R.id.rvCartelera);
+
+        crearPeliculasEnFirebase();
 
         List<Pelicula> selechoy = Arrays.asList(
                 new Pelicula(R.drawable.adolescencia,"serie"),
@@ -73,5 +83,85 @@ public class CarteleraActivity extends AppCompatActivity {
         rvCartelera.setLayoutManager(new LinearLayoutManager(this));
         CategoriaAdapter adapter = new CategoriaAdapter(categorias);
         rvCartelera.setAdapter(adapter);
+    }
+
+    private void crearPeliculasEnFirebase(){
+        DatabaseReference peliculaRef = FirebaseDatabase.getInstance().getReference("peliculas");
+
+
+        peliculaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    // Crear y guardar las películas solo si no existen
+                    Pelicula pelicula1 = new Pelicula();
+                    pelicula1.setTitulo("Van Helsing");
+                    pelicula1.setAnio(2004);
+                    pelicula1.setEdad("13+");
+                    pelicula1.setDuracion("2h 11m");
+                    pelicula1.setSinopsis("El cazador de vampiros Van Helsing...");
+                    pelicula1.setActores("Hugh Jackman, Kate Beckinsale...");
+                    pelicula1.setDirector("Stephen Sommers");
+                    pelicula1.setTipo("pelicula");
+                    pelicula1.setImagenUrl("https://firebasestorage.googleapis.com/v0/b/netflixclone-61496.firebasestorage.app/o/Peliculas%2Fvanhel.png?alt=media&token=93fe3658-0710-4976-a548-1859734d0a0f");
+
+                    String Key = peliculaRef.push().getKey();
+                    pelicula1.setId(Key);
+
+                    Pelicula pelicula2 = new Pelicula();
+                    pelicula2.setTitulo("Inframundo");
+                    pelicula2.setAnio(2003);
+                    pelicula2.setEdad("16+");
+                    pelicula2.setDuracion("2h 1m");
+                    pelicula2.setSinopsis("Una guerra entre vampiros y hombres lobo...");
+                    pelicula2.setActores("Kate Beckinsale, Scott Speedman...");
+                    pelicula2.setDirector("Len Wiseman");
+                    pelicula2.setTipo("pelicula");
+                    pelicula2.setImagenUrl("https://firebasestorage.googleapis.com/v0/b/netflixclone-61496.firebasestorage.app/o/Peliculas%2Finframundo.png?alt=media&token=4fa4e6a1-6147-4e52-a630-a7901d079d29");
+
+                    pelicula2.setId(Key);
+
+                    Pelicula serie1 = new Pelicula();
+                    serie1.setTitulo("Adolescencia");
+                    serie1.setAnio(2023);
+                    serie1.setEdad("16+");
+                    serie1.setDuracion("1 temporada");
+                    serie1.setSinopsis("Una serie que explora los desafíos de la adolescencia...");
+                    serie1.setActores("Actor 1, Actor 2...");
+                    serie1.setDirector("Jack Thorne, Stephen Graham");
+                    serie1.setTipo("serie");
+                    serie1.setImagenUrl("https://firebasestorage.googleapis.com/v0/b/netflixclone-61496.firebasestorage.app/o/Peliculas%2Fadolescencia.png?alt=media&token=91805d2d-3fe2-4269-abde-769509e5e36a");
+                    serie1.setId(Key);
+                    List<Episodio> episodios = Arrays.asList(
+                            new Episodio("1. Episodio 1", R.drawable.adoles1, "Sinopsis del episodio 1", "45 min"),
+                            new Episodio("2. Episodio 2", R.drawable.adoles2, "Sinopsis del episodio 2", "50 min"),
+                            new Episodio("3. Episodio 3", R.drawable.adoles3, "Sinopsis del episodio 3", "48 min"),
+                            new Episodio("4. Episodio 4", R.drawable.adoles4, "Sinopsis del episodio 4", "52 min")
+                    );
+                    serie1.setEpisodios(episodios);
+
+                    Pelicula blackmirror = new Pelicula();
+                    blackmirror.setTitulo("Black Mirror");
+                    blackmirror.setAnio(2025);
+                    blackmirror.setEdad("16+");
+                    blackmirror.setDuracion("7 temporadas");
+                    blackmirror.setSinopsis("Aclamada por Vulture como «sorprendentemente buena y bastante aterradora»...");
+                    blackmirror.setActores("Awkwafina, Anthony Mackie...");
+                    blackmirror.setDirector("Director de la serie");
+                    blackmirror.setTipo("serie");
+                    blackmirror.setId(Key);
+
+                    peliculaRef.push().setValue(pelicula1);
+                    peliculaRef.push().setValue(pelicula2);
+                    peliculaRef.push().setValue(serie1);
+                    peliculaRef.push().setValue(blackmirror);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Manejar errores
+            }
+        });
     }
 }
