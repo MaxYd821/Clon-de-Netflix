@@ -47,16 +47,51 @@ public class CarteleraAdapter extends RecyclerView.Adapter<CarteleraAdapter.Cart
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pelicula.getTipo().equals("pelicula")){
+                if (pelicula.getTitulo().equals("Van Helsing")) {
                     Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
-                    intent.putExtra("peliculaId", String.valueOf(pelicula.getIdpeli()));
+                    intent.putExtra("firebaseId", "-OQLd8mnQH-uBoA1UDQb");
+                    v.getContext().startActivity(intent);
+                }else if (pelicula.getTitulo().equals("Life")) {
+                    Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
+                    intent.putExtra("firebaseId", "-1QLd8mnQH-uBoA1UDQb");
+                    v.getContext().startActivity(intent);
+                }else if (pelicula.getTitulo().equals("Tomb Raider")) {
+                    Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
+                    intent.putExtra("firebaseId", "-2QLd8mnQH-uBoA1UDQb");
+                    v.getContext().startActivity(intent);
+                }else if (pelicula.getTitulo().equals("Anaconda 2")) {
+                    Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
+                    intent.putExtra("firebaseId", "-3QLd8mnQH-uBoA1UDQb");
+                    v.getContext().startActivity(intent);
+                }else if (pelicula.getTitulo().equals("Bastardos sin gloria")) {
+                    Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
+                    intent.putExtra("firebaseId", "-4QLd8mnQH-uBoA1UDQb");
+                    v.getContext().startActivity(intent);
+                }else if (pelicula.getTitulo().equals("Gladiador")) {
+                    Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
+                    intent.putExtra("firebaseId", "-5QLd8mnQH-uBoA1UDQb");
+                    v.getContext().startActivity(intent);
+                }else if (pelicula.getTitulo().equals("Inframundo")) {
+                    Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
+                    intent.putExtra("firebaseId", "-OQLd8n3MmuHAhdkmoA_");
+                    v.getContext().startActivity(intent);
+                }else if (pelicula.getTitulo().equals("Hellboy")) {
+                    Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
+                    intent.putExtra("firebaseId", "-6QLd8mnQH-uBoA1UDQb");
+                    v.getContext().startActivity(intent);
+                }else if (pelicula.getTitulo().equals("Ejercito de ladrones")) {
+                    Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
+                    intent.putExtra("firebaseId", "-7QLd8mnQH-uBoA1UDQb");
+                    v.getContext().startActivity(intent);
+                }else if (pelicula.getTitulo().equals("Spiderman")) {
+                    Intent intent = new Intent(v.getContext(), DetallePeliActivity.class);
+                    intent.putExtra("firebaseId", "-8QLd8mnQH-uBoA1UDQb");
                     v.getContext().startActivity(intent);
                 } else if(pelicula.getTipo().equals("serie")){
                     Intent intent = new Intent(v.getContext(), DetalleSerieActivity.class);
-                    intent.putExtra("peliculaId", String.valueOf(pelicula.getIdpeli()));
+                    intent.putExtra("firebaseId", "-OQLd8n4D5_VYyMiJ21_");
                     v.getContext().startActivity(intent);
                 }
-
             }
         });
     }

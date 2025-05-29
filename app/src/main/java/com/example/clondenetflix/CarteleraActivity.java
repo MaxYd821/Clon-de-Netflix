@@ -1,6 +1,7 @@
 package com.example.clondenetflix;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -37,39 +38,41 @@ public class CarteleraActivity extends AppCompatActivity {
 
         RecyclerView rvCartelera = findViewById(R.id.rvCartelera);
 
-        crearPeliculasEnFirebase();
+        //crearPeliculasEnFirebase();
+
+        //cargarPeliculasDesdeFirebase();
 
         List<Pelicula> selechoy = Arrays.asList(
-                new Pelicula(R.drawable.adolescencia,"serie"),
-                new Pelicula(R.drawable.blackmirror,"serie"),
-                new Pelicula(R.drawable.eljardinero,"serie"),
-                new Pelicula(R.drawable.devil,"serie"),
-                new Pelicula(R.drawable.rym,"serie"),
-                new Pelicula(R.drawable.htsdo,"serie")
+                new Pelicula(R.drawable.adolescencia,"serie", "Adolescencia"),
+                new Pelicula(R.drawable.life,"pelicula","Life"),
+                new Pelicula(R.drawable.tomraider,"pelicula","Tomb Raider"),
+                new Pelicula(R.drawable.devil,"serie",""),
+                new Pelicula(R.drawable.rym,"serie",""),
+                new Pelicula(R.drawable.htsdo,"serie","")
         );
 
         List<Pelicula> proxhis = Arrays.asList(
-                new Pelicula(R.drawable.silavida,"serie"),
-                new Pelicula(R.drawable.twd,"serie"),
-                new Pelicula(R.drawable.breakingbad,"serie"),
-                new Pelicula(R.drawable.prision,"serie"),
-                new Pelicula(R.drawable.drhouse,"serie"),
-                new Pelicula(R.drawable.lost,"serie")
+                new Pelicula(R.drawable.anaconda2,"pelicula","Anaconda 2"),
+                new Pelicula(R.drawable.bastardos,"pelicula","Bastardos sin gloria"),
+                new Pelicula(R.drawable.gladiador,"pelicula","Gladiador"),
+                new Pelicula(R.drawable.prision,"serie",""),
+                new Pelicula(R.drawable.drhouse,"serie",""),
+                new Pelicula(R.drawable.lost,"serie","")
         );
 
         List<Pelicula> porqviste = Arrays.asList(
-                new Pelicula(R.drawable.vanhel,"pelicula"),
-                new Pelicula(R.drawable.inframundo,"pelicula"),
-                new Pelicula(R.drawable.hellboy, "pelicula"),
-                new Pelicula(R.drawable.tomraider, "pelicula"),
-                new Pelicula(R.drawable.anaconda2, "pelicula"),
-                new Pelicula(R.drawable.life, "pelicula")
+                new Pelicula(R.drawable.vanhel,"pelicula","Van Helsing"),
+                new Pelicula(R.drawable.inframundo,"pelicula","Inframundo"),
+                new Pelicula(R.drawable.hellboy, "pelicula","Hellboy"),
+                new Pelicula(R.drawable.tomraider, "pelicula",""),
+                new Pelicula(R.drawable.anaconda2, "pelicula",""),
+                new Pelicula(R.drawable.life, "pelicula","")
         );
 
         List<Pelicula> milista = Arrays.asList(
-                new Pelicula(R.drawable.twd, "serie"),
-                new Pelicula(R.drawable.breakingbad, "serie"),
-                new Pelicula(R.drawable.adolescencia, "serie")
+                new Pelicula(R.drawable.ejercitoladrones, "pelicula","Ejercito de ladrones"),
+                new Pelicula(R.drawable.spiderman, "pelicula","Spiderman"),
+                new Pelicula(R.drawable.adolescencia, "serie","")
         );
 
         List<CategoriaPeliculas> categorias = Arrays.asList(
@@ -93,7 +96,7 @@ public class CarteleraActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    // Crear y guardar las películas solo si no existen
+
                     Pelicula pelicula1 = new Pelicula();
                     pelicula1.setTitulo("Van Helsing");
                     pelicula1.setAnio(2004);
@@ -107,6 +110,7 @@ public class CarteleraActivity extends AppCompatActivity {
 
                     String Key = peliculaRef.push().getKey();
                     pelicula1.setId(Key);
+                    peliculaRef.child(Key).setValue(pelicula1);
 
                     Pelicula pelicula2 = new Pelicula();
                     pelicula2.setTitulo("Inframundo");
@@ -151,7 +155,8 @@ public class CarteleraActivity extends AppCompatActivity {
                     blackmirror.setTipo("serie");
                     blackmirror.setId(Key);
 
-                    peliculaRef.push().setValue(pelicula1);
+
+                    //peliculaRef.push().setValue(pelicula1);
                     peliculaRef.push().setValue(pelicula2);
                     peliculaRef.push().setValue(serie1);
                     peliculaRef.push().setValue(blackmirror);
@@ -164,4 +169,33 @@ public class CarteleraActivity extends AppCompatActivity {
             }
         });
     }
+
+    /*private void cargarPeliculasDesdeFirebase() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("peliculas");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Pelicula> listaPeliculas = new ArrayList<>();
+                for (DataSnapshot peliSnapshot : snapshot.getChildren()) {
+                    Pelicula pelicula = peliSnapshot.getValue(Pelicula.class);
+                    listaPeliculas.add(pelicula);
+                }
+
+                // Agruparlas por categoría si es necesario (aquí simple ejemplo)
+                List<CategoriaPeliculas> categorias = Arrays.asList(
+                        new CategoriaPeliculas("Películas desde Firebase", listaPeliculas)
+                );
+
+                RecyclerView rvCartelera = findViewById(R.id.rvCartelera);
+                rvCartelera.setLayoutManager(new LinearLayoutManager(CarteleraActivity.this));
+                rvCartelera.setAdapter(new CategoriaAdapter(categorias));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(CarteleraActivity.this, "Error al cargar datos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }*/
 }

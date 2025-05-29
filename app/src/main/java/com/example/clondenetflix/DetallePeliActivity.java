@@ -3,6 +3,7 @@ package com.example.clondenetflix;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuView;
 import androidx.core.graphics.Insets;
@@ -28,10 +30,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+
 import com.bumptech.glide.Glide;
 
 public class DetallePeliActivity extends AppCompatActivity {
     TextView tvTitulo, tvAnio, tvEdad, tvDuracion, tvSinopsis, tvActores, tvDirector;
+    ImageView ivBack, ivIconHomePeli;
     VideoView vvPrevista;
 
     @Override
@@ -44,40 +49,47 @@ public class DetallePeliActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        String peliculaId = getIntent().getStringExtra("peliculaId");
-        DatabaseReference peliculaRef = FirebaseDatabase.getInstance().getReference("peliculas").child(peliculaId);
-
-        peliculaRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                Pelicula pelicula = snapshot.getValue(Pelicula.class);
-                if (pelicula != null) {
-                    tvTitulo.setText(pelicula.getTitulo());
-                    tvAnio.setText(String.valueOf(pelicula.getAnio()));
-                    tvEdad.setText(pelicula.getEdad());
-                    tvDuracion.setText(pelicula.getDuracion());
-                    tvSinopsis.setText(pelicula.getSinopsis());
-                    tvActores.setText(pelicula.getActores());
-                    tvDirector.setText(pelicula.getDirector());
-
-                    /*ImageView ivPelicula = findViewById(R.id.ivPelicula);
-                    Glide .with(DetallePeliActivity.this)
-                            .load(pelicula.getImagenUrl())
-                            .into(ivPelicula);*/
-                    Glide.with(DetallePeliActivity.this)
-                            .load(pelicula.getImagenUrl())
-                            .into((ImageView) findViewById(R.id.ivPelicula));
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Toast.makeText(DetallePeliActivity.this, "Error al cargar datos", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         setupView();
+
+        String firebaseId = getIntent().getStringExtra("firebaseId");
+
+        if (firebaseId != null) {
+            DatabaseReference peliculaRef = FirebaseDatabase.getInstance()
+                    .getReference("peliculas")
+                            .child(firebaseId);
+                    //.child("-OQLd8mnQH-uBoA1UDQb");
+
+            peliculaRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Pelicula pelicula = snapshot.getValue(Pelicula.class);
+
+                    if (pelicula == null) {
+                        Log.e("DetallePeliActivity", "No se pudo convertir el snapshot a Pelicula");
+                        return;
+                    }
+                    Log.i("DetallePeliActivity", "Titulo: "+ pelicula.getTitulo());
+                    if (pelicula != null) {
+                        // Mostrar los datos
+                        tvTitulo.setText(pelicula.getTitulo());
+                        tvAnio.setText(String.valueOf(pelicula.getAnio()));
+                        tvEdad.setText(pelicula.getEdad());
+                        tvDuracion.setText(pelicula.getDuracion());
+                        tvSinopsis.setText(pelicula.getSinopsis());
+                        tvActores.setText(pelicula.getActores());
+                        tvDirector.setText(pelicula.getDirector());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(DetallePeliActivity.this, "Error al cargar datos", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+
+
 
         RecyclerView rvPelisSimilares1 = findViewById(R.id.rvPelisSimilares1);
         RecyclerView rvPelisSimilares2 = findViewById(R.id.rvPelisSimilares2);
@@ -85,27 +97,27 @@ public class DetallePeliActivity extends AppCompatActivity {
         RecyclerView rvPelisSimilares4 = findViewById(R.id.rvPelisSimilares4);
 
         List<Pelicula> pelissimil1 = Arrays.asList(
-                new Pelicula(R.drawable.adolescencia,"serie"),
-                new Pelicula(R.drawable.blackmirror,"serie"),
-                new Pelicula(R.drawable.eljardinero,"serie")
+                new Pelicula(R.drawable.adolescencia,"serie",""),
+                new Pelicula(R.drawable.blackmirror,"serie",""),
+                new Pelicula(R.drawable.eljardinero,"serie","")
         );
 
         List<Pelicula> pelissimil2 = Arrays.asList(
-                new Pelicula(R.drawable.silavida,"serie"),
-                new Pelicula(R.drawable.twd,"serie"),
-                new Pelicula(R.drawable.breakingbad,"serie")
+                new Pelicula(R.drawable.silavida,"serie",""),
+                new Pelicula(R.drawable.twd,"serie",""),
+                new Pelicula(R.drawable.breakingbad,"serie","")
         );
 
         List<Pelicula> pelissimil3 = Arrays.asList(
-                new Pelicula(R.drawable.anaconda2,"pelicula"),
-                new Pelicula(R.drawable.hellboy,"pelicula"),
-                new Pelicula(R.drawable.drhouse,"serie")
+                new Pelicula(R.drawable.anaconda2,"pelicula",""),
+                new Pelicula(R.drawable.hellboy,"pelicula",""),
+                new Pelicula(R.drawable.drhouse,"serie","")
         );
 
         List<Pelicula> pelissimil4 = Arrays.asList(
-                new Pelicula(R.drawable.tomraider,"pelicula"),
-                new Pelicula(R.drawable.inframundo,"pelicula"),
-                new Pelicula(R.drawable.life,"pelicula")
+                new Pelicula(R.drawable.tomraider,"pelicula",""),
+                new Pelicula(R.drawable.inframundo,"pelicula",""),
+                new Pelicula(R.drawable.life,"pelicula","")
         );
 
         setupRecyclerView(rvPelisSimilares1, pelissimil1);
@@ -114,7 +126,41 @@ public class DetallePeliActivity extends AppCompatActivity {
         setupRecyclerView(rvPelisSimilares4, pelissimil4);
 
         vvPrevista = findViewById(R.id.vvPrevista);
-        Uri previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_vanhelsing);
+        Uri previewUri;
+        if(Objects.equals(firebaseId, "-OQLd8mnQH-uBoA1UDQb")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_vanhelsing);
+        }
+        else if(Objects.equals(firebaseId, "-1QLd8mnQH-uBoA1UDQb")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_life);
+        }
+        else if(Objects.equals(firebaseId, "-2QLd8mnQH-uBoA1UDQb")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_tombraider);
+        }
+        else if(Objects.equals(firebaseId, "-3QLd8mnQH-uBoA1UDQb")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_anaconda2);
+        }
+        else if(Objects.equals(firebaseId, "-4QLd8mnQH-uBoA1UDQb")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_bastardos);
+        }
+        else if(Objects.equals(firebaseId, "-5QLd8mnQH-uBoA1UDQb")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_gladiador);
+        }
+        else if(Objects.equals(firebaseId, "-OQLd8n3MmuHAhdkmoA_")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_inframundo);
+        }
+        else if(Objects.equals(firebaseId, "-6QLd8mnQH-uBoA1UDQb")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_hellboy);
+        }
+        else if(Objects.equals(firebaseId, "-7QLd8mnQH-uBoA1UDQb")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_ejerladro);
+        }
+        else if(Objects.equals(firebaseId, "-8QLd8mnQH-uBoA1UDQb")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_spiderman);
+        }
+        else {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.pre_vanhelsing);
+        }
+
         vvPrevista.setVideoURI(previewUri);
         vvPrevista.setOnPreparedListener(mp -> {
             mp.setLooping(true);
@@ -124,8 +170,14 @@ public class DetallePeliActivity extends AppCompatActivity {
         vvPrevista.setMediaController(mediaController);
         mediaController.setAnchorView(vvPrevista);
 
-        ImageView ivBack = findViewById(R.id.ivBack);
+
         ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        ivIconHomePeli.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -148,5 +200,7 @@ public class DetallePeliActivity extends AppCompatActivity {
         tvSinopsis = findViewById(R.id.tvSinopsis);
         tvActores = findViewById(R.id.tvActores);
         tvDirector = findViewById(R.id.tvDirector);
+        ivBack = findViewById(R.id.ivBack);
+        ivIconHomePeli = findViewById(R.id.ivIconHomePeli);
     }
 }

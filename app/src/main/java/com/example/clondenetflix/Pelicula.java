@@ -3,34 +3,30 @@ package com.example.clondenetflix;
 import com.example.clondenetflix.Entidades.Episodio;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pelicula implements Serializable {
     private String id;
     private int idpeli;
     private String tipo;
-    public String titulo;
-    public int anio;
-    public String edad;
-    public String duracion;
-    public String sinopsis;
-    public String actores;
-    public String director;
+    private String titulo;
+    private int anio;
+    private String edad;
+    private String duracion;
+    private String sinopsis;
+    private String actores;
+    private String director;
     private String imagenUrl;
-    private List<Episodio> episodios;
+    private List<Episodio> episodios = new ArrayList<>();
 
-    public Pelicula(int idpeli, String tipo) {
+    public Pelicula(int idpeli, String tipo, String titulo) {
         this.idpeli = idpeli;
         this.tipo = tipo;
+        this.titulo = titulo;
     }
 
     public Pelicula() {
-    }
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
     }
 
     public int getIdpeli() {
@@ -39,6 +35,14 @@ public class Pelicula implements Serializable {
 
     public void setIdpeli(int idpeli) {
         this.idpeli = idpeli;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTipo() {
@@ -104,15 +108,19 @@ public class Pelicula implements Serializable {
     public void setDirector(String director) {
         this.director = director;
     }
-    public String getImagenUrl(){
+
+    public String getImagenUrl() {
         return imagenUrl;
     }
-    public void setImagenUrl(String imagenUrl){
+
+    public void setImagenUrl(String imagenUrl) {
         this.imagenUrl = imagenUrl;
     }
+
     public List<Episodio> getEpisodios() {
         return episodios;
     }
+
     public void setEpisodios(List<Episodio> episodios) {
         this.episodios = episodios;
     }
