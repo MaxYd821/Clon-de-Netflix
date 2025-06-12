@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,6 +14,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ClonDeNetflix"
         tools:targetApi="31">
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ReproducirActivity"
+            android:exported="false"
+            android:label="@string/title_activity_reproducir"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.ClonDeNetflix" />
         <activity
             android:name=".DetalleSerieActivity"
             android:exported="false" />
@@ -25,11 +41,6 @@
         <activity
             android:name=".InicioSesionActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".CarteleraActivity"

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ import com.bumptech.glide.Glide;
 public class DetallePeliActivity extends AppCompatActivity {
     TextView tvTitulo, tvAnio, tvEdad, tvDuracion, tvSinopsis, tvActores, tvDirector;
     ImageView ivBack, ivIconHomePeli;
+    ImageButton btnVer;
     VideoView vvPrevista;
 
     @Override
@@ -87,9 +89,6 @@ public class DetallePeliActivity extends AppCompatActivity {
                 }
             });
         }
-
-
-
 
         RecyclerView rvPelisSimilares1 = findViewById(R.id.rvPelisSimilares1);
         RecyclerView rvPelisSimilares2 = findViewById(R.id.rvPelisSimilares2);
@@ -183,6 +182,11 @@ public class DetallePeliActivity extends AppCompatActivity {
                 finish();
             }
         });
+        btnVer.setOnClickListener(v -> {
+            Intent intent = new Intent(DetallePeliActivity.this, ReproducirActivity.class);
+            intent.putExtra("firebaseId", firebaseId);
+            startActivity(intent);
+        });
 
     }
 
@@ -202,5 +206,6 @@ public class DetallePeliActivity extends AppCompatActivity {
         tvDirector = findViewById(R.id.tvDirector);
         ivBack = findViewById(R.id.ivBack);
         ivIconHomePeli = findViewById(R.id.ivIconHomePeli);
+        btnVer = findViewById(R.id.btnVer);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.clondenetflix;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class InicioSesionActivity extends AppCompatActivity {
 
+    SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +38,14 @@ public class InicioSesionActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
+
+        if (isLoggedIn) {
+            startActivity(new Intent(InicioSesionActivity.this, CarteleraActivity.class));
+            finish();
+        }
 
         Button btnIniciarSesion = findViewById(R.id.btnIniciarSesion);
         Button btnSuscribir = findViewById(R.id.btnSuscribir);
@@ -65,8 +76,12 @@ public class InicioSesionActivity extends AppCompatActivity {
                             }
                         }
                         if (encontrado) {
+                            SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
+                            editor.putBoolean("isLoggedIn", true);
+                            editor.apply();
                             Intent intent = new Intent(InicioSesionActivity.this, CarteleraActivity.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             Toast.makeText(InicioSesionActivity.this, "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show();
                         }

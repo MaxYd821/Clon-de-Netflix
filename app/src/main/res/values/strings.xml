@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Clon de Netflix</string>
+    <string name="title_activity_reproducir">ReproducirActivity</string>
 </resources>

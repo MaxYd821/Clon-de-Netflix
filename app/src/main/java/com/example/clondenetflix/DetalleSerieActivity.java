@@ -1,9 +1,11 @@
 package com.example.clondenetflix;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -35,6 +37,7 @@ public class DetalleSerieActivity extends AppCompatActivity {
 
     TextView tvTitulo, tvAnio, tvEdad, tvDuracion, tvSinopsis, tvActores, tvDirector;
     ImageView ivBack, ivIconHomeSer;
+    ImageButton btnVers;
     VideoView vvPrevistaEpisodio;
 
     @Override
@@ -135,6 +138,11 @@ public class DetalleSerieActivity extends AppCompatActivity {
                 finish();
             }
         });
+        btnVers.setOnClickListener(v -> {
+            Intent intent = new Intent(DetalleSerieActivity.this, ReproducirActivity.class);
+            intent.putExtra("firebaseId", firebaseId);
+            startActivity(intent);
+        });
     }
 
     private void setupView() {
@@ -147,5 +155,6 @@ public class DetalleSerieActivity extends AppCompatActivity {
         tvDirector = findViewById(R.id.tvDirector);
         ivBack = findViewById(R.id.ivBack);
         ivIconHomeSer = findViewById(R.id.ivIconHomeSer);
+        btnVers = findViewById(R.id.btnVers);
     }
 }
