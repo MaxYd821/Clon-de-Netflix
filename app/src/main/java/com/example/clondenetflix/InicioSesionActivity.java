@@ -43,7 +43,7 @@ public class InicioSesionActivity extends AppCompatActivity {
         boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
 
         if (isLoggedIn) {
-            startActivity(new Intent(InicioSesionActivity.this, CarteleraActivity.class));
+            startActivity(new Intent(InicioSesionActivity.this, PerfilesActivity.class));
             finish();
         }
 
@@ -79,7 +79,7 @@ public class InicioSesionActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = getSharedPreferences("MyPrefs", MODE_PRIVATE).edit();
                             editor.putBoolean("isLoggedIn", true);
                             editor.apply();
-                            Intent intent = new Intent(InicioSesionActivity.this, CarteleraActivity.class);
+                            Intent intent = new Intent(InicioSesionActivity.this, PerfilesActivity.class);
                             startActivity(intent);
                             finish();
                         } else {

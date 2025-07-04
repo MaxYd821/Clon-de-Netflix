@@ -8,6 +8,42 @@
     android:background="@color/black"
     tools:context=".CarteleraActivity">
 
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layoutCartelera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#000000">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="16dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/edtBuscar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Buscar juegos, series, películas..."
+            android:textColorHint="#ADADAD"
+            android:background="#373737"
+            android:padding="8dp"
+            android:textColor="#FFFFFF"/>
+
+        <ImageButton
+            android:id="@+id/btnBuscar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/iconbuscar"
+            android:background="@android:color/transparent"
+            android:contentDescription="Buscar película" />
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCartelera"
         android:layout_width="match_parent"
@@ -17,6 +53,22 @@
         android:scrollbars="horizontal"
         tools:layout_editor_absoluteX="-62dp"
         tools:layout_editor_absoluteY="16dp" />
+    </LinearLayout>
+
+    <!-- Contenedor para mostrar resultado de búsqueda -->
+    <LinearLayout
+        android:id="@+id/contenedorResultado"
+        android:layout_width="170dp"
+        android:layout_height="240dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.1"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,13 +102,30 @@
             android:layout_marginEnd="45dp"
             android:layout_marginStart="10dp"
             android:src="@drawable/icon_nueypopul" />
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/icon_miperfil" />
+        <LinearLayout
+            android:id="@+id/perfilContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:layout_marginEnd="16dp">
+
+            <ImageView
+                android:id="@+id/ivPerfilCartelera"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="4dp"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/tvNombrePerfilCartelera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"/>
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Clon de Netflix</string>
     <string name="title_activity_reproducir">ReproducirActivity</string>
+    <string name="qui_n_est_viendo_ahora">¿Quién está viendo ahora?</string>
 </resources>

@@ -74,7 +74,6 @@ public class ReproducirActivity extends AppCompatActivity {
         }
         ImageButton btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
-
     }
 
     private void toggleFullscreen() {
