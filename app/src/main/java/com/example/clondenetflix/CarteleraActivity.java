@@ -30,61 +30,78 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import android.text.TextWatcher;
+import android.text.Editable;
 
 public class CarteleraActivity extends AppCompatActivity {
 
-        private RecyclerView rvCategorias;
-        private EditText edtBuscar;
-        private ImageView btnBuscar;
-        private LinearLayout contenedorResultado;
+    private RecyclerView rvCategorias;
+    private EditText edtBuscar;
+    private ImageView btnBuscar;
+    private LinearLayout contenedorResultado;
+    private List<CategoriaPeliculas> categorias;
+    private CategoriaAdapter categoriaAdapter;
 
-        private List<CategoriaPeliculas> categorias;
-        private CategoriaAdapter categoriaAdapter;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_cartelera);
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_cartelera);
+        rvCategorias = findViewById(R.id.rvCartelera);
+        edtBuscar = findViewById(R.id.edtBuscar);
+        btnBuscar = findViewById(R.id.btnBuscar);
+        contenedorResultado = findViewById(R.id.contenedorResultado);
 
-            rvCategorias = findViewById(R.id.rvCartelera);
-            edtBuscar = findViewById(R.id.edtBuscar);
-            btnBuscar = findViewById(R.id.btnBuscar);
-            contenedorResultado = findViewById(R.id.contenedorResultado);
+        // Simula la carga de datos
+        categorias = new ArrayList<>();
+        categoriaAdapter = new CategoriaAdapter(categorias);
+        rvCategorias.setLayoutManager(new LinearLayoutManager(this));
+        rvCategorias.setAdapter(categoriaAdapter);
+        cargarPeliculasDesdeFirebase(); // <-- llamado final
 
-            // Simula la carga de datos
-            categorias = cargarCategorias();
-            categoriaAdapter = new CategoriaAdapter(categorias);
-            rvCategorias.setLayoutManager(new LinearLayoutManager(this));
-            rvCategorias.setAdapter(categoriaAdapter);
+        edtBuscar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            btnBuscar.setOnClickListener(v -> buscarPelicula());
-
-            ImageView ivPerfilCartelera = findViewById(R.id.ivPerfilCartelera);
-
-            // Obtener extras
-            Intent intent = getIntent();
-            String nombrePerfil = intent.getStringExtra("nombrePerfil");
-            String urlFoto = intent.getStringExtra("urlFoto");
-
-            if (urlFoto != null && !urlFoto.isEmpty()) {
-                Glide.with(this).load(urlFoto).into(ivPerfilCartelera);
-            } else {
-                ivPerfilCartelera.setImageResource(R.drawable.icon_miperfil); // tu imagen por defecto
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                buscarPelicula(s.toString());
             }
 
-            ivPerfilCartelera.setOnClickListener(v -> {
-                Intent perfilIntent = new Intent(CarteleraActivity.this, PerfilDetalleActivity.class);
-                perfilIntent.putExtra("nombrePerfil", nombrePerfil);
-                perfilIntent.putExtra("urlFoto", urlFoto);
-                startActivity(perfilIntent);
-            });
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
-            TextView tvNombrePerfil = findViewById(R.id.tvNombrePerfilCartelera);
-            tvNombrePerfil.setText(nombrePerfil);
+        ImageView ivPerfilCartelera = findViewById(R.id.ivPerfilCartelera);
+
+        // Obtener extras
+        Intent intent = getIntent();
+        String nombrePerfil = intent.getStringExtra("nombrePerfil");
+        String urlFoto = intent.getStringExtra("urlFoto");
+
+        if (urlFoto != null && !urlFoto.isEmpty()) {
+            Glide.with(this).load(urlFoto).into(ivPerfilCartelera);
+        } else {
+            ivPerfilCartelera.setImageResource(R.drawable.icon_miperfil); // tu imagen por defecto
         }
-    private void buscarPelicula() {
-        String tituloBuscado = edtBuscar.getText().toString().trim().toLowerCase();
+
+        ivPerfilCartelera.setOnClickListener(v -> {
+            Intent perfilIntent = new Intent(CarteleraActivity.this, PerfilDetalleActivity.class);
+            perfilIntent.putExtra("nombrePerfil", nombrePerfil);
+            perfilIntent.putExtra("urlFoto", urlFoto);
+            startActivity(perfilIntent);
+        });
+
+        TextView tvNombrePerfil = findViewById(R.id.tvNombrePerfilCartelera);
+        tvNombrePerfil.setText(nombrePerfil);
+    }
+
+    private void buscarPelicula(String textoBuscado) {
+        String tituloBuscado = textoBuscado.trim().toLowerCase();
+
+        contenedorResultado.removeAllViews();
 
         if (tituloBuscado.isEmpty()) {
             contenedorResultado.setVisibility(View.GONE);
@@ -92,17 +109,50 @@ public class CarteleraActivity extends AppCompatActivity {
             return;
         }
 
+        rvCategorias.setVisibility(View.GONE);
+        contenedorResultado.setVisibility(View.VISIBLE);
+
+        boolean encontrada = false;
+
         for (CategoriaPeliculas categoria : categorias) {
             for (Pelicula p : categoria.getListpelis()) {
                 String tituloPelicula = p.getTitulo().toLowerCase();
                 if (tituloPelicula.contains(tituloBuscado)) {
-                    mostrarResultado(p);
-                    return;
+                    encontrada = true;
+                    ImageView imageView = new ImageView(this);
+                    imageView.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            700
+                    ));
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                    if (p.getImagenUrl() != null && !p.getImagenUrl().isEmpty()) {
+                        Glide.with(this)
+                                .load(p.getImagenUrl())
+                                .into(imageView);
+                    } else {
+                        imageView.setImageResource(p.getIdpeli());
+                    }
+
+                    imageView.setOnClickListener(v -> {
+                        Intent intent;
+                        if (p.getTipo().equalsIgnoreCase("pelicula")) {
+                            intent = new Intent(this, DetallePeliActivity.class);
+                        } else {
+                            intent = new Intent(this, DetalleSerieActivity.class);
+                        }
+                        intent.putExtra("firebaseId", p.getId());
+                        startActivity(intent);
+                    });
+
+                    contenedorResultado.addView(imageView);
                 }
             }
         }
 
-        Toast.makeText(this, "Película no encontrada", Toast.LENGTH_SHORT).show();
+        if (!encontrada) {
+            Toast.makeText(this, "Película no encontrada", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void mostrarResultado(Pelicula pelicula) {
@@ -127,7 +177,6 @@ public class CarteleraActivity extends AppCompatActivity {
             imageView.setImageResource(pelicula.getIdpeli());
         }
 
-        // 👉 Aquí se agrega la misma funcionalidad de click que ya tenías
         imageView.setOnClickListener(v -> {
             Intent intent = null;
             String titulo = pelicula.getTitulo();
@@ -190,47 +239,56 @@ public class CarteleraActivity extends AppCompatActivity {
     }
 
 
-    private List<CategoriaPeliculas> cargarCategorias() {
-            List<Pelicula> selechoy = Arrays.asList(
-                    new Pelicula(R.drawable.adolescencia, "serie", "Adolescencia"),
-                    new Pelicula(R.drawable.life, "pelicula", "Life"),
-                    new Pelicula(R.drawable.tomraider, "pelicula", "Tomb Raider"),
-                    new Pelicula(R.drawable.devil, "serie", ""),
-                    new Pelicula(R.drawable.rym, "serie", ""),
-                    new Pelicula(R.drawable.htsdo, "serie", "")
-            );
+    private void cargarPeliculasDesdeFirebase() {
+        DatabaseReference refPeliculas = FirebaseDatabase.getInstance().getReference("peliculas");
 
-            List<Pelicula> proxhis = Arrays.asList(
-                    new Pelicula(R.drawable.anaconda2, "pelicula", "Anaconda 2"),
-                    new Pelicula(R.drawable.bastardos, "pelicula", "Bastardos sin gloria"),
-                    new Pelicula(R.drawable.gladiador, "pelicula", "Gladiador"),
-                    new Pelicula(R.drawable.prision, "serie", ""),
-                    new Pelicula(R.drawable.drhouse, "serie", ""),
-                    new Pelicula(R.drawable.lost, "serie", "")
-            );
+        refPeliculas.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Pelicula> listaPeliculas = new ArrayList<>();
 
-            List<Pelicula> porqviste = Arrays.asList(
-                    new Pelicula(R.drawable.vanhel, "pelicula", "Van Helsing"),
-                    new Pelicula(R.drawable.inframundo, "pelicula", "Inframundo"),
-                    new Pelicula(R.drawable.hellboy, "pelicula", "Hellboy"),
-                    new Pelicula(R.drawable.tomraider, "pelicula", ""),
-                    new Pelicula(R.drawable.anaconda2, "pelicula", ""),
-                    new Pelicula(R.drawable.life, "pelicula", "")
-            );
+                for (DataSnapshot peliSnap : snapshot.getChildren()) {
+                    Pelicula pelicula = peliSnap.getValue(Pelicula.class);
+                    if (pelicula != null) {
+                        pelicula.setId(peliSnap.getKey());
+                        listaPeliculas.add(pelicula);
+                    }
+                }
 
-            List<Pelicula> milista = Arrays.asList(
-                    new Pelicula(R.drawable.ejercitoladrones, "pelicula", "Ejercito de ladrones"),
-                    new Pelicula(R.drawable.spiderman, "pelicula", "Spiderman"),
-                    new Pelicula(R.drawable.adolescencia, "serie", "")
-            );
 
-            List<CategoriaPeliculas> categorias = Arrays.asList(
-                    new CategoriaPeliculas("Nuestra selección de hoy para ti", selechoy),
-                    new CategoriaPeliculas("Tu próxima historia", proxhis),
-                    new CategoriaPeliculas("Porque viste Resident Evil", porqviste),
-                    new CategoriaPeliculas("Mi lista                                            Ver Todos>", milista)
-            );
+                // Reparto en 4 categorías de forma equitativa
+                int totalPeliculas = listaPeliculas.size();
+                int numCategorias = 4;
+                int baseSize = totalPeliculas / numCategorias;
+                int extra = totalPeliculas % numCategorias;
 
-            return categorias;
-        }
+                String[] nombresCategorias = {
+                        "Nuestra selección de hoy para ti",
+                        "Tu próxima historia",
+                        "Porque viste Resident Evil",
+                        "Mi lista                                            Ver Todos>"
+                };
+
+                List<CategoriaPeliculas> categoriasFirebase = new ArrayList<>();
+                int index = 0;
+
+                for (int i = 0; i < numCategorias; i++) {
+                    int cantidad = baseSize + (i < extra ? 1 : 0); // Distribuye el sobrante
+                    int end = Math.min(index + cantidad, listaPeliculas.size());
+                    List<Pelicula> sublista = listaPeliculas.subList(index, end);
+                    categoriasFirebase.add(new CategoriaPeliculas(nombresCategorias[i], sublista));
+                    index = end;
+                }
+
+                categorias.clear();
+                categorias.addAll(categoriasFirebase);
+                categoriaAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(CarteleraActivity.this, "Error al cargar películas", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+}

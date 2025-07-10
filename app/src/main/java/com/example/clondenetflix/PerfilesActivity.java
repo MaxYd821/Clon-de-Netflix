@@ -30,7 +30,7 @@ public class PerfilesActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         UserService apiService = ApiClient.getRetrofit().create(UserService.class);
-        Call<Usuario> call = apiService.getUsuarioPorId(3);  // 🔥 Asegúrate de tener este endpoint
+        Call<Usuario> call = apiService.getUsuarioPorId(3);
 
         call.enqueue(new Callback<Usuario>() {
             @Override

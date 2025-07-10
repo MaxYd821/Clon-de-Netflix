@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.clondenetflix.Entidades.Episodio;
 import com.example.clondenetflix.Pelicula;
 import com.example.clondenetflix.R;
@@ -32,15 +33,23 @@ public class EpisodioAdapter extends RecyclerView.Adapter<EpisodioAdapter.Episod
     @Override
     public void onBindViewHolder(@NonNull EpisodioAdapter.EpisodioViewHolder holder, int position) {
         Episodio episodio = episodios.get(position);
-        ImageView ivEpisodios =holder.itemView.findViewById(R.id.ivEpisodios);
-        ivEpisodios.setImageResource(episodio.getIdEpisodio());
+
+        ImageView ivEpisodios = holder.itemView.findViewById(R.id.ivEpisodios);
         TextView tvEpisodiosNombre = holder.itemView.findViewById(R.id.tvEpisodiosNombre);
         TextView tvEpisodioduracion = holder.itemView.findViewById(R.id.tvEpisodioduracion);
         TextView tvEpisodiodes = holder.itemView.findViewById(R.id.tvEpisodiodes);
+
+        if (episodio.getIdUrl() != null && !episodio.getIdUrl().isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(episodio.getIdUrl())
+                    .into(ivEpisodios);
+        } else {
+            //ivEpisodios.setImageResource(R.drawable.imagen_por_defecto);
+        }
+
         tvEpisodiosNombre.setText(episodio.getNombre());
         tvEpisodioduracion.setText(episodio.getDuracion());
         tvEpisodiodes.setText(episodio.getSinopsis());
-
     }
 
     @Override

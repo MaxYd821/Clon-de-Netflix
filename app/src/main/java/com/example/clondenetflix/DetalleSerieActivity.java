@@ -30,8 +30,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class DetalleSerieActivity extends AppCompatActivity {
 
@@ -88,11 +90,14 @@ public class DetalleSerieActivity extends AppCompatActivity {
                 }
             });
         }
-
-
-
         vvPrevistaEpisodio = findViewById(R.id.vvPrevistaEpisodio);
-        Uri previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.adolescencia);
+        Uri previewUri;
+        if(Objects.equals(firebaseId, "-12QLd8mnQH-uBoA1UDQb")) {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.preeljardinero);
+        }
+        else {
+            previewUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.adolescencia);
+        }
         vvPrevistaEpisodio.setVideoURI(previewUri);
         vvPrevistaEpisodio.setOnPreparedListener(mp -> {
             mp.setLooping(true);
@@ -102,29 +107,37 @@ public class DetalleSerieActivity extends AppCompatActivity {
         vvPrevistaEpisodio.setMediaController(mediaController);
         mediaController.setAnchorView(vvPrevistaEpisodio);
 
-        String sinopsis1 = "La pocilia derriba la puerta del hogar de los Miller. El " +
-                "adolescente Jamie es arrestado y llevado a la comisaría para ser interrogado, pero " +
-                "insiste en que no ha hecho nada malo.";
-        String sinopsis2 = "La pocilia busca respuestas --y el arma homicida-- en la escuela" +
-                "de Jamie. No obtienen información de los amigos del chico, hasta que el hijo" +
-                "del detective Bascombe ofrece su ayuda.";
-        String sinopsis3 = "Jamie se reune con una psicóloga. Al principio no quiere hablar, pero" +
-                "después se sincera sobre sus complejos sentimientos hacia Katie.";
-        String sinopsis4 = "En el cumpleaños de Edie, los Miller intentan festejar como si todo estuviera bien, pero" +
-                "una serie de sucesos improvistos amenazan con desestabilizarlos.";
-
-        List<Episodio> episodios = Arrays.asList(
-                new Episodio("1. Episodio 1", R.drawable.adoles1, sinopsis1, "45 min"),
-                new Episodio("2. Episodio 2", R.drawable.adoles2, sinopsis2, "50 min"),
-                new Episodio("3. Episodio 3", R.drawable.adoles3, sinopsis3, "48 min"),
-                new Episodio("4. Episodio 4", R.drawable.adoles4, sinopsis4, "52 min")
-        );
-
         RecyclerView rvEpisodios = findViewById(R.id.rvEpisodios);
+        rvEpisodios.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        rvEpisodios.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
+        //String firebaseId = getIntent().getStringExtra("firebaseId");
+        List<Episodio> episodios = new ArrayList<>();
         EpisodioAdapter adapter = new EpisodioAdapter(episodios);
         rvEpisodios.setAdapter(adapter);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("peliculas")
+                .child(firebaseId)
+                .child("episodios");
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                episodios.clear();
+                for (DataSnapshot epSnap : snapshot.getChildren()) {
+                    Episodio episodio = epSnap.getValue(Episodio.class);
+                    if (episodio != null) {
+                        episodios.add(episodio);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DetalleSerieActivity.this, "Error al cargar episodios", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override

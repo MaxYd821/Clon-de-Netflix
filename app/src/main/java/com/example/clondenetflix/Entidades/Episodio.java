@@ -2,18 +2,17 @@ package com.example.clondenetflix.Entidades;
 
 public class Episodio {
     private String nombre;
-    private int IdEpisodio;
+    private String idUrl;
     private String sinopsis;
     private String duracion;
 
-    public Episodio(String nombre, int idEpisodio, String sinopsis, String duracion) {
+    public Episodio() {
+    }
+    public Episodio(String nombre, String idUrl, String sinopsis, String duracion) {
         this.nombre = nombre;
-        IdEpisodio = idEpisodio;
+        this.idUrl = idUrl;
         this.sinopsis = sinopsis;
         this.duracion = duracion;
-    }
-
-    public Episodio() {
     }
 
     public String getNombre() {
@@ -24,12 +23,12 @@ public class Episodio {
         this.nombre = nombre;
     }
 
-    public int getIdEpisodio() {
-        return IdEpisodio;
+    public String getIdUrl() {
+        return idUrl;
     }
 
-    public void setIdEpisodio(int idEpisodio) {
-        IdEpisodio = idEpisodio;
+    public void setIdUrl(String idUrl) {
+        this.idUrl = idUrl;
     }
 
     public String getSinopsis() {

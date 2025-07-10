@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -88,6 +89,7 @@ public class DetallePeliActivity extends AppCompatActivity {
                     Toast.makeText(DetallePeliActivity.this, "Error al cargar datos", Toast.LENGTH_SHORT).show();
                 }
             });
+            cargarPeliculasSimilares(firebaseId);
         }
 
         RecyclerView rvPelisSimilares1 = findViewById(R.id.rvPelisSimilares1);
@@ -95,34 +97,6 @@ public class DetallePeliActivity extends AppCompatActivity {
         RecyclerView rvPelisSimilares3 = findViewById(R.id.rvPelisSimilares3);
         RecyclerView rvPelisSimilares4 = findViewById(R.id.rvPelisSimilares4);
 
-        List<Pelicula> pelissimil1 = Arrays.asList(
-                new Pelicula(R.drawable.adolescencia,"serie",""),
-                new Pelicula(R.drawable.blackmirror,"serie",""),
-                new Pelicula(R.drawable.eljardinero,"serie","")
-        );
-
-        List<Pelicula> pelissimil2 = Arrays.asList(
-                new Pelicula(R.drawable.silavida,"serie",""),
-                new Pelicula(R.drawable.twd,"serie",""),
-                new Pelicula(R.drawable.breakingbad,"serie","")
-        );
-
-        List<Pelicula> pelissimil3 = Arrays.asList(
-                new Pelicula(R.drawable.anaconda2,"pelicula",""),
-                new Pelicula(R.drawable.hellboy,"pelicula",""),
-                new Pelicula(R.drawable.drhouse,"serie","")
-        );
-
-        List<Pelicula> pelissimil4 = Arrays.asList(
-                new Pelicula(R.drawable.tomraider,"pelicula",""),
-                new Pelicula(R.drawable.inframundo,"pelicula",""),
-                new Pelicula(R.drawable.life,"pelicula","")
-        );
-
-        setupRecyclerView(rvPelisSimilares1, pelissimil1);
-        setupRecyclerView(rvPelisSimilares2, pelissimil2);
-        setupRecyclerView(rvPelisSimilares3, pelissimil3);
-        setupRecyclerView(rvPelisSimilares4, pelissimil4);
 
         vvPrevista = findViewById(R.id.vvPrevista);
         Uri previewUri;
@@ -187,9 +161,52 @@ public class DetallePeliActivity extends AppCompatActivity {
             intent.putExtra("firebaseId", firebaseId);
             startActivity(intent);
         });
-
     }
+    private void cargarPeliculasSimilares(String firebaseIdActual) {
+        DatabaseReference refPeliculas = FirebaseDatabase.getInstance().getReference("peliculas");
 
+        refPeliculas.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Pelicula> todas = new ArrayList<>();
+
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    Pelicula peli = snap.getValue(Pelicula.class);
+                    if (peli != null && !Objects.equals(snap.getKey(), firebaseIdActual)) {
+                        peli.setId(snap.getKey());
+                        todas.add(peli);
+                    }
+                }
+
+                // Limita a 12 películas
+                int totalSimilares = Math.min(todas.size(), 12);
+                List<Pelicula> similares = todas.subList(0, totalSimilares);
+
+                // Divide en 4 listas de 3
+                List<List<Pelicula>> grupos = new ArrayList<>();
+                for (int i = 0; i < 4; i++) {
+                    int start = i * 3;
+                    int end = Math.min(start + 3, similares.size());
+                    if (start < end) {
+                        grupos.add(similares.subList(start, end));
+                    } else {
+                        grupos.add(new ArrayList<>()); // Lista vacía si faltan pelis
+                    }
+                }
+
+                // Asignar a los RecyclerViews
+                setupRecyclerView(findViewById(R.id.rvPelisSimilares1), grupos.get(0));
+                setupRecyclerView(findViewById(R.id.rvPelisSimilares2), grupos.get(1));
+                setupRecyclerView(findViewById(R.id.rvPelisSimilares3), grupos.get(2));
+                setupRecyclerView(findViewById(R.id.rvPelisSimilares4), grupos.get(3));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DetallePeliActivity.this, "Error al cargar similares", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     private void setupRecyclerView(RecyclerView recyclerView, List<Pelicula> peliculas) {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         PelisSimilAdapter adapter = new PelisSimilAdapter(peliculas);

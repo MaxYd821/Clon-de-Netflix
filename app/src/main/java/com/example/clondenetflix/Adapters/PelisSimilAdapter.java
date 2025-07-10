@@ -1,6 +1,7 @@
 package com.example.clondenetflix.Adapters;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.clondenetflix.CarteleraActivity;
 import com.example.clondenetflix.CarteleraAdapter;
 import com.example.clondenetflix.DetallePeliActivity;
@@ -35,10 +37,18 @@ public class PelisSimilAdapter extends RecyclerView.Adapter<PelisSimilAdapter.Pe
     @Override
     public void onBindViewHolder(@NonNull PelisSimilAdapter.PelisSimilViewHolder holder, int position) {
         Pelicula pelicula = peli.get(position);
-        ImageView ivPelisSimil =holder.itemView.findViewById(R.id.ivPelisSimilares);
-        ivPelisSimil.setImageResource(pelicula.getIdpeli());
+        ImageView ivPelisSimil = holder.itemView.findViewById(R.id.ivPelisSimilares);
 
+        if (pelicula.getImagenUrl() != null && !pelicula.getImagenUrl().isEmpty()) {
+            // Cargar imagen desde Firebase Storage o URL
+            Glide.with(holder.itemView.getContext())
+                    .load(pelicula.getImagenUrl())
+                    .into(ivPelisSimil);
+        } else {
+            //ivPelisSimil.setImageResource(pelicula.getIdpeli());
+        }
     }
+
 
     @Override
     public int getItemCount() {

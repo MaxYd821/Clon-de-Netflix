@@ -50,6 +50,8 @@ public class ReproducirActivity extends AppCompatActivity {
             VIDEO_URL = "https://firebasestorage.googleapis.com/v0/b/netflixclone-61496.firebasestorage.app/o/Bastardossingloria.mp4?alt=media&token=fa05d5b4-2fbc-4983-ab58-38f3bf034d5a";
         } else if (firebaseId.equals("-OQLd8n3MmuHAhdkmoA_")) {
             VIDEO_URL = "https://firebasestorage.googleapis.com/v0/b/netflixclone-61496.firebasestorage.app/o/Inframundover.mp4?alt=media&token=bf30890b-a8cd-4a13-b1c7-dc366bf38e79";
+        } else if (firebaseId.equals("-12QLd8mnQH-uBoA1UDQb")) {
+            VIDEO_URL = "https://firebasestorage.googleapis.com/v0/b/netflixclone-61496.firebasestorage.app/o/preeljardinero.mp4?alt=media&token=a390888e-2fdf-49e0-8349-630f8647bb3b";
         }
 
 
